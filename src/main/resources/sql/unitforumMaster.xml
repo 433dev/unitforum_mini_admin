@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ftt.unitforum_admin.dao.unitforum.IUnitforumMasterDao">
+	<resultMap id="forumMasterResultMap" type="ftt.unitforum_admin.types.UnitforumMaster">
+		<id property="masterIdx" column="unitforum_master_idx" />
+		<result property="ssn" column="ssn" />
+		<result property="createDt" column="create_dt" />
+		<result property="desc" column="descr" />
+		<result property="showYn" column="show_yn" />
+		<result property="viewType" column="view_type" />
+		<result property="unitType" column="unit_type" />
+	</resultMap>
+	
+	<select id="queryList" resultMap="forumMasterResultMap">
+		<![CDATA[
+			SELECT unitforum_master_idx, ssn, create_dt, descr, show_yn, view_type, unit_type
+			FROM unitforum_master
+			ORDER BY unitforum_master_idx DESC
+			LIMIT 1000
+        ]]>
+	</select>
+	
+	<select id="queryUsedList" resultMap="forumMasterResultMap">
+		<![CDATA[
+			SELECT unitforum_master_idx, ssn, create_dt, descr, show_yn, view_type, unit_type
+			FROM unitforum_master
+			WHERE show_yn='Y'
+			ORDER BY unitforum_master_idx DESC
+			LIMIT 1000
+        ]]>
+	</select>
+	
+	<select id="queryInfo" resultMap="forumMasterResultMap">
+		<![CDATA[
+			SELECT unitforum_master_idx, ssn, create_dt, descr, show_yn, view_type, unit_type
+			FROM unitforum_master
+			WHERE unitforum_master_idx = #{masterIdx}
+        ]]>
+	</select>
+	
+	<insert id="insertInfo" parameterType="ftt.unitforum_admin.types.UnitforumMaster">
+        <![CDATA[
+			INSERT unitforum_master(unitforum_master_idx, ssn, descr, create_dt, show_yn, view_type, unit_type)
+			SELECT
+				(SELECT IFNULL(MAX(unitforum_master_idx), 0) + 1 FROM unitforum_master),
+				#{ssn},
+				#{desc},
+				now(),
+				'N',
+				#{viewType},
+				#{unitType}
+        ]]>
+	</insert>
+	
+	<update id="updateShowStatus">
+		<![CDATA[
+			UPDATE unitforum_master 
+			SET show_yn = #{showYn} 
+			WHERE unitforum_master_idx = #{masterIdx}
+		]]>
+	</update>
+	
+	<update id="updateDescription">
+		<![CDATA[
+			UPDATE unitforum_master 
+			SET descr = #{desc} 
+			WHERE unitforum_master_idx = #{masterIdx}
+		]]>
+	</update>
+	
+	<delete id="deleteInfo">
+		<![CDATA[
+			DELETE FROM unitforum_master
+			WHERE unitforum_master_idx = #{masterIdx}
+		]]>
+	</delete>
+</mapper>

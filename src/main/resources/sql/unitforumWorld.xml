@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ftt.unitforum_admin.dao.unitforum.IUnitforumWorldDao">
+	<resultMap id="forumWorldResultMap" type="ftt.unitforum_admin.types.UnitforumWorld">
+		<id property="masterIdx" column="unitforum_master_idx" />
+		<result property="worldIdx" column="world_idx" />
+		<result property="worldName" column="world_name" />
+		<result property="createDt" column="create_dt" />
+	</resultMap>
+	
+	<select id="queryList" resultMap="forumWorldResultMap">
+		<![CDATA[
+			SELECT unitforum_master_idx, world_idx, world_name, create_dt
+			FROM unitforum_world
+			WHERE unitforum_master_idx = #{masterIdx}
+			ORDER BY world_idx ASC
+			LIMIT 1000
+        ]]>
+	</select>
+	
+	<insert id="insertInfo" parameterType="ftt.unitforum_admin.types.UnitforumWorld">
+        <![CDATA[
+			INSERT unitforum_world(unitforum_master_idx, world_idx, world_name, create_dt)
+			VALUES(#{masterIdx}, #{worldIdx}, #{worldName}, now())
+        ]]>
+	</insert>
+	
+	<delete id="deleteInfo">
+		<![CDATA[
+			DELETE FROM unitforum_world
+			WHERE unitforum_master_idx = #{masterIdx} AND world_idx = #{worldIdx}
+		]]>
+	</delete>
+	
+	<delete id="deleteAll">
+		<![CDATA[
+			DELETE FROM unitforum_world
+			WHERE unitforum_master_idx = #{masterIdx}
+		]]>
+	</delete>
+</mapper>

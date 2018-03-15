@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ftt.unitforum_admin.dao.unitforum.IUnitforumArticleHistoryDao">
+	<resultMap id="forumArticleHistoryResultMap" type="ftt.unitforum_admin.types.UnitforumArticleHistory">
+		<id property="articleHistIdx" column="unitforum_article_hist_idx" />
+		<result property="articleIdx" column="unitforum_article_idx" />
+		<result property="langCode" column="lang_code" />
+		<result property="accountIdx" column="account_idx" />
+		<result property="nickname" column="nickname" />
+		<result property="charGrade" column="char_grade" />
+		<result property="content" column="content" />
+		<result property="likeCnt" column="like_cnt" />
+		<result property="createDt" column="create_dt" />
+		<result property="workDt" column="work_dt" />
+		<result property="workUser" column="work_user" />
+		<result property="abuseType" column="abuse_type" />
+		<result property="abuseDesc" column="abuse_desc" />
+		<result property="masterIdx" column="unitforum_master_idx" />
+		<result property="ssn" column="ssn" />
+		<result property="desc" column="descr" />
+		<result property="class1Code" column="class1_code" />
+		<result property="class1Name" column="class1_name" />
+		<result property="class2Code" column="class2_code" />
+		<result property="class2Name" column="class2_name" />
+		<result property="worldIdx" column="world_idx" />
+		<result property="worldName" column="world_name" />
+		<result property="comment" column="comment" />
+		<result property="histCreateDt" column="hist_createdt" />
+		<result property="adminID" column="user_id" />
+	</resultMap>
+
+	<select id="queryList" resultMap="forumArticleHistoryResultMap">
+        <![CDATA[
+            SELECT 
+            	a.unitforum_article_hist_idx,
+            	a.unitforum_article_idx,
+            	a.lang_code,
+            	a.account_idx,
+            	a.nickname,
+            	a.char_grade,
+            	a.content,
+            	a.like_cnt,
+            	a.create_dt,
+            	a.work_dt,
+            	a.work_user,
+            	a.abuse_type,
+            	a.abuse_desc,
+                b.unitforum_master_idx,
+                b.ssn,
+                b.descr,
+                c.class1_code,
+            	c.class1_name,
+            	d.class2_code,
+            	d.class2_name,
+                e.world_idx,
+            	e.world_name,
+            	f.comment,
+            	f.create_dt hist_createdt,
+            	a.work_user
+            FROM unitforum_article_hist a
+            LEFT JOIN unitforum_master b
+            ON a.unitforum_master_idx = b.unitforum_master_idx
+            LEFT JOIN unitforum_class1 c
+            ON a.unitforum_master_idx = c.unitforum_master_idx AND a.class1_code = c.class1_code
+            LEFT JOIN unitforum_class2 d
+            ON a.unitforum_master_idx = d.unitforum_master_idx AND a.class1_code = d.class1_code AND a.class2_code = d.class2_code
+            LEFT JOIN unitforum_world e
+            ON a.unitforum_master_idx = e.unitforum_master_idx AND a.world_idx = e.world_idx
+            LEFT JOIN unitforum_admin_log f
+            ON a.unitforum_article_hist_idx = f.unitforum_article_hist_idx
+            WHERE a.unitforum_master_idx = #{masterIdx}
+            AND a.lang_code = ifnull(#{langCode}, a.lang_code)
+            AND a.class1_code = ifnull(#{class1Code}, a.class1_code)
+            AND a.class2_code = ifnull(#{class2Code}, a.class2_code)
+            AND a.create_dt > #{startDt}
+            AND a.create_dt < #{endDt}
+            AND a.nickname = ifnull(#{nickname}, a.nickname)
+            ORDER BY a.create_dt DESC
+            LIMIT 1000
+        ]]>
+	</select>
+	
+	<select id="getArticleHistory" resultType="java.lang.Integer">
+        <![CDATA[
+            SELECT unitforum_article_hist_idx
+            FROM unitforum_article_hist
+            WHERE unitforum_article_idx = #{articleIdx}
+            LIMIT 1
+        ]]>
+	</select>
+	
+	<insert id="insertInfo">
+        <![CDATA[
+			INSERT unitforum_article_hist(
+				unitforum_article_idx,
+				unitforum_master_idx,
+				world_idx,
+				lang_code,
+				class1_code,
+				class2_code,
+				account_idx,
+				nickname,
+				char_grade,
+				content,
+				like_cnt,
+				create_dt,
+				work_dt,
+				work_user,
+				abuse_type,
+				abuse_desc
+			)
+			SELECT
+				unitforum_article_idx,
+				unitforum_master_idx,
+				world_idx,
+				lang_code,
+				class1_code,
+				class2_code,
+				account_idx,
+				nickname,
+				char_grade,
+				content,
+				like_cnt,
+				create_dt,
+				now(),
+				#{workUser},
+				#{abuseType},
+				#{abuseDesc}
+			FROM unitforum_article
+			WHERE unitforum_article_idx = #{articleIdx}
+        ]]>
+	</insert>
+	
+	<delete id="deleteInfo">
+		<![CDATA[
+			DELETE FROM unitforum_article_hist
+			WHERE unitforum_article_idx = #{articleIdx}
+		]]>
+	</delete>
+</mapper>

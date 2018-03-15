@@ -1,0 +1,40 @@
+server:
+    port: 18081
+    server-header: unitforum
+
+spring:
+    mvc:
+        view:
+            prefix: /WEB-INF/jsp/
+            suffix: .jsp
+            staticPathPattern: /**
+    resources:
+        staticLocations: file:./src/main/webapp/WEB-INF/static
+    http:
+        multipart:
+             maxFileSize: 100Mb
+             maxRequestSize: 100Mb
+
+logging:
+    config: file:./config/logback.xml
+
+# DB
+datasource:
+    unitforum:
+        driverClassName: "com.mysql.jdbc.Driver"
+        url: "jdbc:mysql://{mysql_host}:{mysql_port}/unitforumdb?autoReconnect=true&initialTimeout=3&maxReconnects=5&useUnicode=true&characterEncoding=utf8"
+        username: {mysql_id}
+        password: {mysql_password}
+        testOnBorrow: true
+        testWhileIdle: true
+        validationQuery: SELECT 1
+
+application:
+    gameName: ServiceName
+    environment: Dev
+    staticResource: /static
+    messageResource: classpath:/messages/message
+    language:
+        - 1, English, en
+        - 2, Korean, ko
+        - 3, Japanese, ja

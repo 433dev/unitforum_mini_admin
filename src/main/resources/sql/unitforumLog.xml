@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ftt.unitforum_admin.dao.unitforum.IUnitforumLogDao">
+	<resultMap id="forumLogResultMap" type="ftt.unitforum_admin.types.UnitforumLog">
+		<id property="adminLogIdx" column="unitforum_admin_log_idx" />
+		<result property="articleIdx" column="unitforum_article_idx" />
+		<result property="adminNo" column="admin_no" />
+		<result property="logType" column="log_type" />
+		<result property="comment" column="comment" />
+		<result property="createDt" column="create_dt" />
+		<result property="adminID" column="user_id" />
+	</resultMap>
+	
+	<select id="queryList" resultMap="forumLogResultMap">
+        <![CDATA[
+            SELECT 
+            	unitforum_admin_log_idx,
+            	unitforum_article_idx,
+            	admin_no,
+            	log_type,
+            	comment,
+            	create_dt,
+            	admin_no
+            FROM unitforum_admin_log
+            WHERE create_dt > #{startDt}
+            AND create_dt < #{endDt}
+            ORDER BY create_dt DESC
+            LIMIT 1000
+        ]]>
+	</select>
+	
+	<insert id="insertInfo">
+       <![CDATA[
+		INSERT unitforum_admin_log(
+			unitforum_article_hist_idx,
+			admin_no,
+			unitforum_article_idx,
+			log_type,
+			comment,
+			create_dt
+		)
+		values
+		(
+			#{articleHistIdx},
+			#{workUser},
+			#{articleIdx},
+			#{logType},
+			#{comment},
+			now()
+		)
+       ]]>
+	</insert>
+</mapper>

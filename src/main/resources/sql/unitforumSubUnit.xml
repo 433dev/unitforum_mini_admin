@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="ftt.unitforum_admin.dao.unitforum.IUnitforumSubUnitDao">
+	<resultMap id="forumSubUnitResultMap" type="ftt.unitforum_admin.types.UnitforumSubUnit">
+		<id property="masterIdx" column="unitforum_master_idx" />
+		<result property="class1Code" column="class1_code" />
+		<result property="class2Code" column="class2_code" />
+		<result property="class2Name" column="class2_name" />
+		<result property="createDt" column="create_dt" />
+	</resultMap>
+	
+	<select id="queryList" resultMap="forumSubUnitResultMap">
+		<![CDATA[
+			SELECT unitforum_master_idx, class2_code, class2_name, create_dt
+			FROM unitforum_class2
+			WHERE unitforum_master_idx = #{masterIdx} AND class1_code = #{class1Code}
+			ORDER BY class2_code ASC
+			LIMIT 1000
+        ]]>
+	</select>
+	
+	<insert id="insertInfo" parameterType="ftt.unitforum_admin.types.UnitforumSubUnit">
+        <![CDATA[
+			INSERT unitforum_class2(unitforum_master_idx, class1_code, class2_code, class2_name, create_dt)
+			VALUES(#{masterIdx}, #{class1Code}, #{class2Code}, #{class2Name}, now())
+        ]]>
+	</insert>
+	
+	<delete id="deleteInfo">
+		<![CDATA[
+			DELETE FROM unitforum_class2
+			WHERE unitforum_master_idx = #{masterIdx} AND class1_code = #{class1Code} AND class2_code = #{class2Code}
+		]]>
+	</delete>
+	
+	<delete id="deleteAllOfMaster">
+		<![CDATA[
+			DELETE FROM unitforum_class2
+			WHERE unitforum_master_idx = #{masterIdx}
+		]]>
+	</delete>
+	
+	<delete id="deleteAll">
+		<![CDATA[
+			DELETE FROM unitforum_class2
+			WHERE unitforum_master_idx = #{masterIdx} AND class1_code = #{class1Code}
+		]]>
+	</delete>
+</mapper>
