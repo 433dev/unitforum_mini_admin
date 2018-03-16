@@ -1,5 +1,17 @@
-Unitforum Mini
+Unitforum Mini Admin
 ===
+
+## Introtuce
+
+모바일에서 간단히 유닛별 포럼을 운영할 수 있는 관리툴
+
+## Feature
+
+- 포럼 추가/삭제
+- 유닛 관리
+- 게시물 관리
+- 제재글 관리
+- 다국어 지원
 
 ## Enviroment
 
